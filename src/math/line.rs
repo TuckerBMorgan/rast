@@ -24,7 +24,7 @@ impl Line {
         let c2 = a2 * other.a.x + b2 * other.a.y;
         
         let det = a1 * b2 - a2 * b1;
-        
+        println!("{} {} {} {} {}", det, a1, b2, a2, b1);
         if det == 0.0 {
             return None;
         }

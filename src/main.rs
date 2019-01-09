@@ -11,7 +11,6 @@ const HEIGHT: usize = 360;
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
 
-
     let top = Vector2::new(0.0, 320.0);
     let bottom_left = Vector2::new(0.0, 360.0);
     let bottom_right = Vector2::new(640.0, 360.0);
@@ -26,7 +25,7 @@ fn main() {
         let line = Line::new(a, b);
         inter_points.push(triangle.line_intersection_test(&line));
     }
-        println!("{:?}", inter_points);
+//        println!("{:?}", inter_points);
 
     let mut window = Window::new("Test - ESC to exit",
                                  WIDTH,
@@ -36,7 +35,6 @@ fn main() {
     });
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
-
         for points in &inter_points {
             let start;
             let end;
