@@ -11,9 +11,9 @@ const HEIGHT: usize = 360;
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
 
-    let top = Vector2::new(0.0, 320.0);
-    let bottom_left = Vector2::new(0.0, 360.0);
-    let bottom_right = Vector2::new(640.0, 360.0);
+    let top = Vector2::new(320.0, 100.0);
+    let bottom_left = Vector2::new(100.0, 300.0);
+    let bottom_right = Vector2::new(540.0, 300.0);
 
     let triangle = Triangle::new([top, bottom_left, bottom_right]);
 
@@ -25,7 +25,6 @@ fn main() {
         let line = Line::new(a, b);
         inter_points.push(triangle.line_intersection_test(&line));
     }
-//        println!("{:?}", inter_points);
 
     let mut window = Window::new("Test - ESC to exit",
                                  WIDTH,
@@ -34,8 +33,13 @@ fn main() {
         panic!("{}", e);
     });
 
+   // println!("{:?}", inter_points);
+
     while window.is_open() && !window.is_key_down(Key::Escape) {
         for points in &inter_points {
+            if points.len() == 0 {
+                continue;
+            }
             let start;
             let end;
             if points[0].x < points[1].x {
@@ -47,9 +51,12 @@ fn main() {
                 end = points[0];
             }
 
-            let y = start.y as u32;
-            for i in 0..(end.x as u32) {
-                
+            let y = start.y as usize;
+            let start_x = start.x as usize;
+
+            let first_pos = (y * WIDTH as usize) + start_x;
+            for i in 0..(end.x as u32 - start.x as u32) {
+                buffer[first_pos + i as usize] = 255; 
             }
         }
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
