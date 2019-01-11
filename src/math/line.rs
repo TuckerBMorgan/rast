@@ -16,19 +16,30 @@ impl Line {
 
     pub fn other_does_line_intersect(&self, other: &Line) -> Option<Vector2> {
         
-        let a1  = other.a.y - other.b.y;
-        let a2 = self.a.x - other.a.x;
-        let a3 = other.b.x - other.a.x;
-        let a4 = self.a.y - other.a.y;
+        let det = (other.b.y - other.a.y) * (self.b.x - self.a.x)
+                  -
+                  (other.b.x - other.a.x) * (self.b.y - self.a.y);
 
-        let a5 = self.a.y - self.b.y;
-        let a6 = self.a.x - self.b.x;
-        let a7 = other.b.y - other.a.y;
-
-        let ta = (a1 * a2 + a3 * a4) / (a3 * a5 - a6 * a7);
-
+        let n_a = (other.b.x - other.a.x) * (self.a.y - other.a.y)
+                  -
+                  (other.b.y - other.a.y) * (self.a.x - other.a.x);
         
+        let n_b = (self.b.x - self.a.x) * (self.a.y - other.a.y)
+                  - 
+                  (self.b.y - self.a.y) * (self.a.x - other.a.x);
 
+        let ta = n_a / det;
+        let tb = n_b / det;
+
+        if ta >= 0.0 && ta <= 1.0 && tb >= 0.0 && tb <= 1.0 {
+            let return_vec = Vector2::new(
+                self.a.x + (ta * (self.b.x - self.a.x)),
+                self.a.y + (ta * (self.b.y - self.a.y))
+            );
+            return  Some(
+                return_vec
+            );
+        }
 
         return None;
     }

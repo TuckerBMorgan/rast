@@ -11,20 +11,16 @@ const HEIGHT: usize = 360;
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
 
+
+    let mut triangles = vec![];
     let top = Vector2::new(320.0, 100.0);
     let bottom_left = Vector2::new(100.0, 300.0);
     let bottom_right = Vector2::new(540.0, 300.0);
 
     let triangle = Triangle::new([top, bottom_left, bottom_right]);
 
-    let mut inter_points = vec![];
+    triangles.push(triangle);
 
-    for i in 0..HEIGHT {
-        let a = Vector2::new(0.0, i as f32);
-        let b = Vector2::new(WIDTH as f32, i as f32);
-        let line = Line::new(a, b);
-        inter_points.push(triangle.line_intersection_test(&line));
-    }
 
     let mut window = Window::new("Test - ESC to exit",
                                  WIDTH,
@@ -34,10 +30,26 @@ fn main() {
     });
 
    // println!("{:?}", inter_points);
-
+    let rotate_amount = 0.01;
     while window.is_open() && !window.is_key_down(Key::Escape) {
+
+        for i in 0..(WIDTH * HEIGHT) {
+            buffer[i] = 0;
+        }
+        
+        triangles.get_mut(0).as_mut().unwrap().rotate_triangle(rotate_amount);
+        let mut inter_points = vec![];
+        for tri in &triangles {
+            for i in 0..HEIGHT {
+                let a = Vector2::new(0.0, i as f32);
+                let b = Vector2::new(WIDTH as f32, i as f32);
+                let line = Line::new(a, b);
+                inter_points.push(tri.line_intersection_test(&line));
+            }
+        }
+
         for points in &inter_points {
-            if points.len() == 0 {
+            if points.len() < 2 {
                 continue;
             }
             let start;
@@ -56,7 +68,7 @@ fn main() {
 
             let first_pos = (y * WIDTH as usize) + start_x;
             for i in 0..(end.x as u32 - start.x as u32) {
-                buffer[first_pos + i as usize] = 255; 
+                buffer[first_pos + i as usize] =  255 + i * 100000; 
             }
         }
         // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
